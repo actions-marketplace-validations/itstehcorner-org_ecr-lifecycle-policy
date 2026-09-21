@@ -1,26 +1,26 @@
-name: ECR Cleanup
+# name: ECR Cleanup
 
-on:
-  workflow_dispatch:
+# on:
+#   workflow_dispatch:
 
-# permissions:
-#   id-token: write
-#   contents: read
+# # permissions:
+# #   id-token: write
+# #   contents: read
 
-jobs:
-  cleanup:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: aws-actions/configure-aws-credentials@v6
-        with:
-          role-to-assume: ${{ vars.AWS_ECR_ROLE_ARN }}
-          aws-region: us-east-1
+# jobs:
+#   cleanup:
+#     runs-on: ubuntu-24.04
+#     steps:
+#       - uses: aws-actions/configure-aws-credentials@v6
+#         with:
+#           role-to-assume: ${{ vars.AWS_ECR_ROLE_ARN }}
+#           aws-region: us-east-1
 
-      - uses: itstehcorner-org/ecr-lifecycle-policy@main
-        with:
-          policy-file: policy.json
-          dry-run: false
-          region: us-east-1
-          aws-account-id: '123456789012'
-          repository: >-
-            {"include": ["all", "org/repo1", "org/repo2"], "exclude": ["org/repo3", "org/repo4"]}
+#       - uses: itstehcorner-org/ecr-lifecycle-policy@main
+#         with:
+#           policy-file: policy.json
+#           dry-run: false
+#           region: us-east-1
+#           aws-account-id: '123456789012'
+#           repository: >-
+#             {"include": ["all", "org/repo1", "org/repo2"], "exclude": ["org/repo3", "org/repo4"]}
