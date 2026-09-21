@@ -14,7 +14,7 @@ managing 2000 separate Terraform resources, isn't practical.
     role-to-assume: ${{ vars.AWS_ECR_ROLE_ARN }}
     aws-region: us-east-1
 
-- uses: itstehcorner-org/ecr-lifecycle-policy@v1
+- uses: itstehcorner-org/ecr-lifecycle-policy@v1.0.1
   with:
     policy-file: policy.json
     region: us-east-1
