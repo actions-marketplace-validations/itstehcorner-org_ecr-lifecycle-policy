@@ -1,0 +1,72 @@
+name: ECR Lifecycle Policy
+description: Applies an ECR lifecycle policy across every repository in an account/region (or a filtered subset), concurrently.
+author: DevOps
+branding:
+  icon: 'trash-2'
+  color: 'orange'
+
+inputs:
+  policy-file:
+    description: 'Path to the lifecycle policy JSON file, relative to the calling repo root.'
+    required: true
+  region:
+    description: 'AWS region, e.g. us-east-1'
+    required: true
+  dry-run:
+    description: 'Discover and validate only, do not call PutLifecyclePolicy.'
+    required: false
+    default: 'true'
+  aws-account-id:
+    description: 'Optional sanity check: fail if the assumed role is not in this account.'
+    required: false
+    default: ''
+  repository:
+    description: >
+      JSON string: {"include": ["all"] or ["repo1", "org/*"], "exclude": ["repo3"]}.
+      "all" in include means every repository in the account/region. Takes priority
+      over repo-filter if both are set.
+    required: false
+    default: ''
+  repo-filter:
+    description: 'Glob pattern for repos to include, used only if `repository` is not set. Default: all repos.'
+    required: false
+    default: '*'
+  max-workers:
+    description: 'Concurrent PutLifecyclePolicy calls.'
+    required: false
+    default: '20'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      shell: bash
+      run: pip install -r "${{ github.action_path }}/requirements.txt"
+
+    - name: Apply ECR lifecycle policy
+      shell: bash
+      run: |
+        args=(
+          --policy-file "$POLICY_FILE"
+          --region "$REGION"
+          --repo-filter "$REPO_FILTER"
+          --max-workers "$MAX_WORKERS"
+        )
+        [ "$DRY_RUN" = "true" ] && args+=(--dry-run)
+        [ -n "$AWS_ACCOUNT_ID" ] && args+=(--aws-account-id "$AWS_ACCOUNT_ID")
+        [ -n "$REPOSITORY" ] && args+=(--repository-config "$REPOSITORY")
+
+        python "${{ github.action_path }}/apply_lifecycle_policy.py" "${args[@]}"
+      env:
+        POLICY_FILE: ${{ inputs.policy-file }}
+        REGION: ${{ inputs.region }}
+        DRY_RUN: ${{ inputs.dry-run }}
+        AWS_ACCOUNT_ID: ${{ inputs.aws-account-id }}
+        REPOSITORY: ${{ inputs.repository }}
+        REPO_FILTER: ${{ inputs.repo-filter }}
+        MAX_WORKERS: ${{ inputs.max-workers }}
