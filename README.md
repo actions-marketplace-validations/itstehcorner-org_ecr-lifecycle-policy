@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ECR Lifecycle Policy
 
 Applies an [ECR lifecycle policy](https://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html)
@@ -79,6 +78,3 @@ throwaway workflow to test the action wrapper end-to-end before publishing.
 ## License
 
 [MIT](LICENSE)
-=======
-# ecr-lifecycle-policy
->>>>>>> ef83622 (Initial commit)
