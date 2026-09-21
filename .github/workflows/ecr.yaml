@@ -18,7 +18,7 @@
 
 #       - uses: itstehcorner-org/ecr-lifecycle-policy@main
 #         with:
-#           policy-file: policy.json
+#           policy-file: policies/policy.example.json
 #           dry-run: false
 #           region: us-east-1
 #           aws-account-id: '123456789012'
